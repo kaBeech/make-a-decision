@@ -119,6 +119,7 @@ export default function SortingForm() {
             id="question"
             name="question"
             class="border-2 rounded p-2"
+            value="What's for dinner?"
           />
         </div>
         <div class="flex flex-col">
@@ -128,7 +129,9 @@ export default function SortingForm() {
             name="options"
             rows={4}
             class="border-2 rounded p-2"
-          ></textarea>
+          >
+            Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
+          </textarea>
         </div>
         <button
           type="submit"
