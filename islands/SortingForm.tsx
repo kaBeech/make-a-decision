@@ -1,5 +1,5 @@
 
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 
 export default function SortingForm() {
   const [options, setOptions] = useState<string[]>([]);
@@ -8,6 +8,8 @@ export default function SortingForm() {
   const [sortedList, setSortedList] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentPass, setCurrentPass] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(1000);
+  const [timerId, setTimerId] = useState<number | null>(null);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -24,9 +26,49 @@ export default function SortingForm() {
     setCurrentPair([shuffledList[0], shuffledList[1]]);
     setCurrentIndex(0);
     setCurrentPass(0);
+    setTimeLeft(1000);
   };
 
+  // Reset and start timer when showing a new pair
+  useEffect(() => {
+    if (sortingInProgress && currentPair) {
+      // Clear any existing timer
+      if (timerId) {
+        clearInterval(timerId);
+      }
+
+      // Reset timer
+      setTimeLeft(1000);
+
+      // Start new timer
+      const id = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 10) {
+            clearInterval(id);
+            // Make random choice when timer expires
+            const randomChoice = Math.random() < 0.5;
+            handleChoice(randomChoice);
+            return 0;
+          }
+          return prev - 10;
+        });
+      }, 10);
+
+      setTimerId(id);
+
+      // Cleanup on unmount or when pair changes
+      return () => {
+        clearInterval(id);
+      };
+    }
+  }, [currentPair, sortingInProgress]);
+
   const handleChoice = (chooseSecond: boolean) => {
+    // Clear the timer when a choice is made
+    if (timerId) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
     const currentList = [...options];
 
     // If second item was chosen, swap the items
@@ -95,7 +137,7 @@ export default function SortingForm() {
 
       {sortingInProgress && currentPair && (
         <div class="mt-8">
-          <h2 class="text-2xl font-bold mb-4">Choose the better option:</h2>
+          <h2 class="text-2xl font-bold mb-4">Choose the better option: {(timeLeft / 1000).toFixed(1)}s</h2>
           <div class="flex gap-4">
             <button
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
