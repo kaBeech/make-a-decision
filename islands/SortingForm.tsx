@@ -10,6 +10,7 @@ export default function SortingForm() {
   const [timeLeft, setTimeLeft] = useState(1000);
   const [timerId, setTimerId] = useState<number | null>(null);
   const [question, setQuestion] = useState("");
+  const [showTooSlow, setShowTooSlow] = useState(false);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -48,8 +49,12 @@ export default function SortingForm() {
           if (prev <= 10) {
             clearInterval(id);
             // Make random choice when timer expires
-            const randomChoice = Math.random() < 0.5;
-            handleChoice(randomChoice);
+            setShowTooSlow(true);
+            setTimeout(() => {
+              setShowTooSlow(false);
+              const randomChoice = Math.random() < 0.5;
+              handleChoice(randomChoice);
+            }, 250);
             return 0;
           }
           return prev - 10;
@@ -156,20 +161,25 @@ export default function SortingForm() {
       {sortingInProgress && currentPair && (
         <div class="mt-8 popup">
           <h2 class="text-2xl font-bold mb-4 title">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
-          <div class="flex" style={{ gap: "1em" }}
-          >
-            <button
-              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
-              onClick={() => handleChoice(false)}
-            >
-              {currentPair[0]}
-            </button>
-            <button
-              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
-              onClick={() => handleChoice(true)}
-            >
-              {currentPair[1]}
-            </button>
+          <div class="flex" style={{ gap: "1em" }}>
+            {showTooSlow ? (
+              <div class="tooSlow">Too slow!</div>
+            ) : (
+              <>
+                <button
+                  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
+                  onClick={() => handleChoice(false)}
+                >
+                  {currentPair[0]}
+                </button>
+                <button
+                  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
+                  onClick={() => handleChoice(true)}
+                >
+                  {currentPair[1]}
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
