@@ -11,6 +11,7 @@ export default function SortingForm() {
   const [timerId, setTimerId] = useState<number | null>(null);
   const [question, setQuestion] = useState("");
   const [showTooSlow, setShowTooSlow] = useState(false);
+  const [showGetReady, setShowGetReady] = useState(false);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -26,10 +27,16 @@ export default function SortingForm() {
     // Initialize the sorting process
     setOptions(shuffledList);
     setSortingInProgress(true);
-    setCurrentPair([shuffledList[0], shuffledList[1]]);
-    setCurrentIndex(0);
-    setCurrentPass(0);
-    setTimeLeft(1000);
+    setShowGetReady(true);
+
+    // Wait 1 second before showing the first pair
+    setTimeout(() => {
+      setShowGetReady(false);
+      setCurrentPair([shuffledList[0], shuffledList[1]]);
+      setCurrentIndex(0);
+      setCurrentPass(0);
+      setTimeLeft(1000);
+    }, 1000);
   };
 
   // Reset and start timer when showing a new pair
@@ -157,11 +164,13 @@ export default function SortingForm() {
         </form>
       )}
 
-      {sortingInProgress && currentPair && (
+      {sortingInProgress && (showGetReady || currentPair) && (
         <div class="mt-8 popup">
-          <h2 class="text-2xl font-bold mb-4 title">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
+          <h2 class="text-2xl font-bold mb-4 title">{question} {!showGetReady && `(${(timeLeft / 1000).toFixed(1)}s)`}</h2>
           <div class="flex" style={{ gap: "1em" }}>
-            {showTooSlow ? (
+            {showGetReady ? (
+              <div class="tooSlow">Get ready!</div>
+            ) : showTooSlow ? (
               <div class="tooSlow">Too slow!</div>
             ) : (
               <>
@@ -179,6 +188,7 @@ export default function SortingForm() {
                 </button>
               </>
             )}
+
           </div>
         </div>
       )}
