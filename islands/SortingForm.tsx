@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "preact/hooks";
 
 export default function SortingForm() {
@@ -109,50 +108,62 @@ export default function SortingForm() {
 
   };
 
+  const resetForm = () => {
+    setSortingInProgress(false);
+    setSortedList([]);
+    setCurrentPair(null);
+    setOptions([]);
+    setCurrentIndex(0);
+    setCurrentPass(0);
+    setQuestion("");
+  };
+
   return (
     <div>
-      <form onSubmit={handleSubmit} class="flex flex-col gap-4">
-        <div class="flex flex-col">
-          <label htmlFor="question">Add your question:</label>
-          <input
-            type="text"
-            id="question"
-            name="question"
-            class="border-2 rounded p-2"
-            value="What's for dinner?"
-          />
-        </div>
-        <div class="flex flex-col">
-          <label htmlFor="options">Enter your options (one per line):</label>
-          <textarea
-            id="options"
-            name="options"
-            rows={4}
-            class="border-2 rounded p-2"
+      {!sortingInProgress && sortedList.length === 0 && (
+        <form onSubmit={handleSubmit} class="flex flex-col gap-4">
+          <div class="flex flex-col">
+            <label htmlFor="question">Add your question:</label>
+            <input
+              type="text"
+              id="question"
+              name="question"
+              class="border-2 rounded p-2"
+              value="What's for dinner?"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label htmlFor="options">Enter your options (one per line):</label>
+            <textarea
+              id="options"
+              name="options"
+              rows={4}
+              class="border-2 rounded p-2"
+            >
+              Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
+            </textarea>
+          </div>
+          <button
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
-          </textarea>
-        </div>
-        <button
-          type="submit"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Start Sorting
-        </button>
-      </form>
+            Start Sorting
+          </button>
+        </form>
+      )}
 
       {sortingInProgress && currentPair && (
-        <div class="mt-8">
+        <div class="mt-8 popup">
           <h2 class="text-2xl font-bold mb-4">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
           <div class="flex gap-4">
             <button
-              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
               onClick={() => handleChoice(false)}
             >
               {currentPair[0]}
             </button>
             <button
-              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
               onClick={() => handleChoice(true)}
             >
               {currentPair[1]}
@@ -162,15 +173,24 @@ export default function SortingForm() {
       )}
 
       {sortedList.length > 0 && !sortingInProgress && (
-        <div class="mt-8">
+        <div class="mt-8 popup">
           <h2 class="text-2xl font-bold mb-4">{question}</h2>
-          <ol class="list-decimal pl-6">
+          <ol class="list-decimal pl-6 mb-8"
+            style={{ margin: "2em 0" }}
+          >
             {sortedList.map((item, index) => (
               <li key={index} class="mb-2">{item}</li>
             ))}
           </ol>
+          <button
+            onClick={resetForm}
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            New Decision
+          </button>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

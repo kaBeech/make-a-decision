@@ -1,3 +1,29 @@
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 50;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow-y: auto;
+  background-color: #86efac;
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  padding: 5%;
+}
+
+.bigButton {
+  height: 80%;
+  width: 80%;
+  font-size: 8em;
+  padding: 8rem;
+}
 
 *,
 *::before,
@@ -68,7 +94,7 @@ html {
   padding-bottom: 2rem;
   padding-top: 2rem;
 }
-.bg-\[\#86efac\] {
+html, .bg-\[\#86efac\] {
   background-color: #86efac;
 }
 .text-3xl {
