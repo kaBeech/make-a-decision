@@ -6,6 +6,8 @@ export default function SortingForm() {
   const [currentPair, setCurrentPair] = useState<[string, string] | null>(null);
   const [sortingInProgress, setSortingInProgress] = useState(false);
   const [sortedList, setSortedList] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPass, setCurrentPass] = useState(0);
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
@@ -13,10 +15,53 @@ export default function SortingForm() {
     const optionsText = (form.elements.namedItem('options') as HTMLTextAreaElement).value;
     const optionsList = optionsText.split('\n').filter(option => option.trim() !== '');
 
+    // Randomize the initial list
+    const shuffledList = [...optionsList].sort(() => Math.random() - 0.5);
+
     // Initialize the sorting process
-    setOptions(optionsList);
+    setOptions(shuffledList);
     setSortingInProgress(true);
-    setCurrentPair([optionsList[0], optionsList[1]]);
+    setCurrentPair([shuffledList[0], shuffledList[1]]);
+    setCurrentIndex(0);
+    setCurrentPass(0);
+  };
+
+  const handleChoice = (chooseSecond: boolean) => {
+    const currentList = [...options];
+
+    // If second item was chosen, swap the items
+    if (chooseSecond && currentPair) {
+      const [first, second] = currentPair;
+      currentList[currentIndex] = second;
+      currentList[currentIndex + 1] = first;
+    }
+
+    // Move to next pair
+    const nextIndex = currentIndex + 1;
+
+    // If we've reached the end of this pass
+    if (nextIndex >= currentList.length - 1) {
+      const nextPass = currentPass + 1;
+
+      // If we've completed all passes
+      if (nextPass >= currentList.length) {
+        setSortedList(currentList);
+        setSortingInProgress(false);
+        return;
+      }
+
+      // Start next pass
+      setCurrentPass(nextPass);
+      setCurrentIndex(0);
+      setOptions(currentList);
+      setCurrentPair([currentList[0], currentList[1]]);
+    } else {
+      // Continue current pass
+      setCurrentIndex(nextIndex);
+      setOptions(currentList);
+      setCurrentPair([currentList[nextIndex], currentList[nextIndex + 1]]);
+    }
+
   };
 
   return (
@@ -54,13 +99,13 @@ export default function SortingForm() {
           <div class="flex gap-4">
             <button
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {/* TODO: Handle first choice */ }}
+              onClick={() => handleChoice(false)}
             >
               {currentPair[0]}
             </button>
             <button
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {/* TODO: Handle second choice */ }}
+              onClick={() => handleChoice(true)}
             >
               {currentPair[1]}
             </button>
