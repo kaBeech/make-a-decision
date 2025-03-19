@@ -10,11 +10,14 @@ export default function SortingForm() {
   const [currentPass, setCurrentPass] = useState(0);
   const [timeLeft, setTimeLeft] = useState(1000);
   const [timerId, setTimerId] = useState<number | null>(null);
+  const [question, setQuestion] = useState("");
 
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
+    const questionText = (form.elements.namedItem('question') as HTMLInputElement).value;
     const optionsText = (form.elements.namedItem('options') as HTMLTextAreaElement).value;
+    setQuestion(questionText);
     const optionsList = optionsText.split('\n').filter(option => option.trim() !== '');
 
     // Randomize the initial list
@@ -137,7 +140,7 @@ export default function SortingForm() {
 
       {sortingInProgress && currentPair && (
         <div class="mt-8">
-          <h2 class="text-2xl font-bold mb-4">Choose the better option: {(timeLeft / 1000).toFixed(1)}s</h2>
+          <h2 class="text-2xl font-bold mb-4">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
           <div class="flex gap-4">
             <button
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -157,7 +160,7 @@ export default function SortingForm() {
 
       {sortedList.length > 0 && !sortingInProgress && (
         <div class="mt-8">
-          <h2 class="text-2xl font-bold mb-4">Final Sorted List:</h2>
+          <h2 class="text-2xl font-bold mb-4">{question}</h2>
           <ul class="list-decimal pl-6">
             {sortedList.map((item, index) => (
               <li key={index} class="mb-2">{item}</li>
