@@ -139,6 +139,7 @@ export default function SortingForm() {
               name="options"
               rows={4}
               class="border-2 rounded p-2"
+              style={{ height: "60vh" }}
             >
               Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
             </textarea>
@@ -154,8 +155,9 @@ export default function SortingForm() {
 
       {sortingInProgress && currentPair && (
         <div class="mt-8 popup">
-          <h2 class="text-2xl font-bold mb-4">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
-          <div class="flex gap-4">
+          <h2 class="text-2xl font-bold mb-4 title">{question} ({(timeLeft / 1000).toFixed(1)}s)</h2>
+          <div class="flex" style={{ gap: "1em" }}
+          >
             <button
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
               onClick={() => handleChoice(false)}
@@ -174,9 +176,9 @@ export default function SortingForm() {
 
       {sortedList.length > 0 && !sortingInProgress && (
         <div class="mt-8 popup">
-          <h2 class="text-2xl font-bold mb-4">{question}</h2>
+          <h2 class="text-2xl font-bold mb-4 title">{question}</h2>
           <ol class="list-decimal pl-6 mb-8"
-            style={{ margin: "2em 0" }}
+            style={{ marginBottom: "2em" }}
           >
             {sortedList.map((item, index) => (
               <li key={index} class="mb-2">{item}</li>
