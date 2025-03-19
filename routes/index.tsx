@@ -15,8 +15,26 @@ export default function Home() {
         />
         <h1 class="text-4xl font-bold">Make A Decision!</h1>
         <p class="my-4">
-          Try updating this message in the
-          <code class="mx-2">./routes/index.tsx</code> file, and refresh.
+          <form class="flex flex-col gap-4">
+            <div class="flex flex-col">
+              <label htmlFor="question">Add your question:</label>
+              <input
+                type="text"
+                id="question"
+                name="question"
+                class="border-2 rounded p-2"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label htmlFor="options">Enter your options (one per line):</label>
+              <textarea
+                id="options"
+                name="options"
+                rows={4}
+                class="border-2 rounded p-2"
+              ></textarea>
+            </div>
+          </form>
         </p>
         <Counter count={count} />
       </div>
