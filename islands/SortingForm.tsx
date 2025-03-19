@@ -143,8 +143,7 @@ export default function SortingForm() {
               id="options"
               name="options"
               rows={4}
-              class="border-2 rounded p-2"
-              style={{ height: "50vh" }}
+              class="border-2 rounded p-2 optionsList"
             >
               Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
             </textarea>

@@ -18,6 +18,10 @@
   padding: 5%;
 }
 
+.optionsList {
+  height: 50vh;
+}
+
 .bigButton {
   height: 80%;
   width: 80%;
@@ -175,3 +179,75 @@ html, .bg-\[\#86efac\] {
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
+@media (max-width: 768px) {
+  .popup {
+    padding: 1rem;
+  }
+
+  .bigButton {
+    height: 40vw;
+    width: 40vw;
+    font-size: 1.5em;
+    padding: 0.5em;
+    margin: 0.25em;
+  }
+
+  .title {
+    font-size: 1.5em;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .py-8 {
+    padding-top: 0.5rem;
+  }
+
+  .my-4 {
+    margin-top: 0.2rem;
+  }
+
+  .text-4xl {
+    font-size: 1.5em;
+    line-height: 1em;
+  }
+
+  .optionsList {
+    height: 30vh;
+  }
+
+  .tooSlow {
+    font-size: 2em;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .bigButton {
+    height: 35vh;
+    width: 35vh;
+    font-size: 1.2em;
+    padding: 0.3em;
+  }
+
+  .title {
+    font-size: 1.2em;
+    margin-bottom: 0.5rem;
+  }
+
+  .py-8 {
+    padding-top: 0.5rem;
+  }
+
+  .my-4 {
+    margin-top: 0.2rem;
+  }
+
+  .text-4xl {
+    font-size: 1.2em;
+    line-height: 1em;
+  }
+
+  .optionsList {
+    height: 30vw;
+  }
+}
+
