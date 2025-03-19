@@ -164,11 +164,11 @@ export default function SortingForm() {
       {sortedList.length > 0 && !sortingInProgress && (
         <div class="mt-8">
           <h2 class="text-2xl font-bold mb-4">{question}</h2>
-          <ul class="list-decimal pl-6">
+          <ol class="list-decimal pl-6">
             {sortedList.map((item, index) => (
               <li key={index} class="mb-2">{item}</li>
             ))}
-          </ul>
+          </ol>
         </div>
       )}
     </div>
