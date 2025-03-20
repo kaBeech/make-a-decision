@@ -23,6 +23,7 @@ export default function SortingForm() {
   const [timeLeft, setTimeLeft] = useState(time);
   const [showTooSlow, setShowTooSlow] = useState(false);
   const [showGetReady, setShowGetReady] = useState(false);
+  const [rnd, setRnd] = useState(Math.random());
 
   const handleImageUpload = (e: Event) => {
     const input = e.target as HTMLInputElement;
@@ -88,6 +89,7 @@ export default function SortingForm() {
       setCurrentIndex(0);
       setCurrentPass(0);
       setTimeLeft(time);
+      setRnd(Math.random());
     }, 1000);
   };
 
@@ -163,11 +165,13 @@ export default function SortingForm() {
       setCurrentIndex(0);
       setOptions(currentList);
       setCurrentPair([currentList[0], currentList[1]]);
+      setRnd(Math.random());
     } else {
       // Continue current pass
       setCurrentIndex(nextIndex);
       setOptions(currentList);
       setCurrentPair([currentList[nextIndex], currentList[nextIndex + 1]]);
+      setRnd(Math.random());
     }
 
   };
@@ -176,6 +180,7 @@ export default function SortingForm() {
     setSortingInProgress(false);
     setSortedList([]);
     setCurrentPair(null);
+    setRnd(Math.random());
     setOptions([]);
     setCurrentIndex(0);
     setCurrentPass(0);
@@ -278,7 +283,7 @@ export default function SortingForm() {
               <div class="tooSlow">Get ready!</div>
             ) : showTooSlow ? (
               <div class="tooSlow">Too slow!</div>
-            ) : (
+            ) : rnd > 0.5 ? (
               <>
                 <button
                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
@@ -303,6 +308,33 @@ export default function SortingForm() {
                       class="w-48 h-48 object-cover"
                     />
                   ) : currentPair[1].value}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
+                  onClick={() => handleChoice(true)}
+                >
+                  {mode === 'images' ? (
+                    <img
+                      src={currentPair[1].imageUrl}
+                      alt={currentPair[1].value}
+                      class="w-48 h-48 object-cover"
+                    />
+                  ) : currentPair[1].value}
+                </button>
+                <button
+                  class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
+                  onClick={() => handleChoice(false)}
+                >
+                  {mode === 'images' ? (
+                    <img
+                      src={currentPair[0].imageUrl}
+                      alt={currentPair[0].value}
+                      class="w-48 h-48 object-cover"
+                    />
+                  ) : currentPair[0].value}
                 </button>
               </>
             )}
