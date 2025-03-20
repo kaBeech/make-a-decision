@@ -166,12 +166,14 @@ export default function SortingForm() {
       setOptions(currentList);
       setCurrentPair([currentList[0], currentList[1]]);
       setRnd(Math.random());
+      setTimeLeft(time);
     } else {
       // Continue current pass
       setCurrentIndex(nextIndex);
       setOptions(currentList);
       setCurrentPair([currentList[nextIndex], currentList[nextIndex + 1]]);
       setRnd(Math.random());
+      setTimeLeft(time);
     }
 
   };
