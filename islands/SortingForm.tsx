@@ -1,6 +1,6 @@
 import { useState, useEffect } from "preact/hooks";
 
-const defaultTime = 1200;
+const defaultTime = 1500;
 
 export default function SortingForm() {
   const [options, setOptions] = useState<string[]>([]);
