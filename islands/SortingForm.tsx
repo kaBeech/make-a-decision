@@ -2,11 +2,19 @@ import { useState, useEffect } from "preact/hooks";
 
 const defaultTime = 1500;
 
+type SortingMode = 'text' | 'images';
+type Option = {
+  id: string;
+  value: string;
+  imageUrl?: string;
+};
+
 export default function SortingForm() {
-  const [options, setOptions] = useState<string[]>([]);
-  const [currentPair, setCurrentPair] = useState<[string, string] | null>(null);
+  const [mode, setMode] = useState<SortingMode>('text');
+  const [options, setOptions] = useState<Option[]>([]);
+  const [currentPair, setCurrentPair] = useState<[Option, Option] | null>(null);
   const [sortingInProgress, setSortingInProgress] = useState(false);
-  const [sortedList, setSortedList] = useState<string[]>([]);
+  const [sortedList, setSortedList] = useState<Option[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentPass, setCurrentPass] = useState(0);
   const [timerId, setTimerId] = useState<number | null>(null);
@@ -16,15 +24,54 @@ export default function SortingForm() {
   const [showTooSlow, setShowTooSlow] = useState(false);
   const [showGetReady, setShowGetReady] = useState(false);
 
+  const handleImageUpload = (e: Event) => {
+    const input = e.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const newOptions: Option[] = [];
+    const filePromises = Array.from(input.files).map(file => {
+      return new Promise<void>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          newOptions.push({
+            id: Math.random().toString(36).substr(2, 9),
+            value: file.name,
+            imageUrl: e.target?.result as string
+          });
+          resolve();
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    Promise.all(filePromises).then(() => {
+      setOptions(newOptions);
+    });
+  };
+
   const handleSubmit = (e: Event) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const questionText = (form.elements.namedItem('question') as HTMLInputElement).value;
     const time = parseInt((form.elements.namedItem('time') as HTMLInputElement).value);
-    const optionsText = (form.elements.namedItem('options') as HTMLTextAreaElement).value;
+
     setQuestion(questionText);
     setTime(time);
-    const optionsList = optionsText.split('\n').filter(option => option.trim() !== '');
+
+    let optionsList: Option[] = [];
+
+    if (mode === 'text') {
+      const optionsText = (form.elements.namedItem('options') as HTMLTextAreaElement).value;
+      optionsList = optionsText
+        .split('\n')
+        .filter(option => option.trim() !== '')
+        .map(text => ({
+          id: Math.random().toString(36).substr(2, 9),
+          value: text
+        }));
+    } else {
+      optionsList = [...options];
+    }
 
     // Randomize the initial list
     const shuffledList = [...optionsList].sort(() => Math.random() - 0.5);
@@ -140,6 +187,22 @@ export default function SortingForm() {
     <div>
       {!sortingInProgress && sortedList.length === 0 && (
         <form onSubmit={handleSubmit} class="flex flex-col gap-4">
+          <div class="flex gap-4 mb-4">
+            <button
+              type="button"
+              onClick={() => setMode('text')}
+              class={`py-2 px-4 rounded ${mode === 'text' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              Text Mode
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('images')}
+              class={`py-2 px-4 rounded ${mode === 'images' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              Image Mode
+            </button>
+          </div>
           <div class="flex flex-col">
             <label htmlFor="question">Add your question:</label>
             <input
@@ -160,17 +223,44 @@ export default function SortingForm() {
               value={defaultTime}
             />
           </div>
-          <div class="flex flex-col">
-            <label htmlFor="options">Enter your options (one per line):</label>
-            <textarea
-              id="options"
-              name="options"
-              rows={4}
-              class="border-2 rounded p-2 optionsList"
-            >
-              Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
-            </textarea>
-          </div>
+          {mode === 'text' ? (
+            <div class="flex flex-col">
+              <label htmlFor="options">Enter your options (one per line):</label>
+              <textarea
+                id="options"
+                name="options"
+                rows={4}
+                class="border-2 rounded p-2 optionsList"
+              >
+                Tacos&#13;&#10;Curry&#13;&#10;Pizza&#13;&#10;BBQ
+              </textarea>
+            </div>
+          ) : (
+            <div class="flex flex-col">
+              <label htmlFor="images">Upload your images:</label>
+              <input
+                type="file"
+                id="images"
+                name="images"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                class="border-2 rounded p-2"
+              />
+              {options.length > 0 && (
+                <div class="grid grid-cols-4 gap-2 mt-2">
+                  {options.map(option => (
+                    <img
+                      key={option.id}
+                      src={option.imageUrl}
+                      alt={option.value}
+                      class="w-full h-24 object-cover rounded"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           <button
             type="submit"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -194,13 +284,25 @@ export default function SortingForm() {
                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
                   onClick={() => handleChoice(false)}
                 >
-                  {currentPair[0]}
+                  {mode === 'images' ? (
+                    <img
+                      src={currentPair[0].imageUrl}
+                      alt={currentPair[0].value}
+                      class="w-48 h-48 object-cover"
+                    />
+                  ) : currentPair[0].value}
                 </button>
                 <button
                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded bigButton"
                   onClick={() => handleChoice(true)}
                 >
-                  {currentPair[1]}
+                  {mode === 'images' ? (
+                    <img
+                      src={currentPair[1].imageUrl}
+                      alt={currentPair[1].value}
+                      class="w-48 h-48 object-cover"
+                    />
+                  ) : currentPair[1].value}
                 </button>
               </>
             )}
@@ -216,7 +318,20 @@ export default function SortingForm() {
             style={{ marginBottom: "2em" }}
           >
             {sortedList.map((item, index) => (
-              <li key={index} class="mb-2">{item}</li>
+              <li key={item.id} class="mb-2">
+                {mode === 'images' ? (
+                  <div class="flex items-center gap-2">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.value}
+                      class="w-24 h-24 object-cover rounded"
+                    />
+                    <span style={{ display: "none" }}>{item.value}</span>
+                  </div>
+                ) : (
+                  item.value
+                )}
+              </li>
             ))}
           </ol>
           <button
