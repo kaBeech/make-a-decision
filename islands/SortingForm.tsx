@@ -1,5 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
 
+const defaultTime = 1200;
+
 export default function SortingForm() {
   const [options, setOptions] = useState<string[]>([]);
   const [currentPair, setCurrentPair] = useState<[string, string] | null>(null);
@@ -7,9 +9,10 @@ export default function SortingForm() {
   const [sortedList, setSortedList] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentPass, setCurrentPass] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(1000);
   const [timerId, setTimerId] = useState<number | null>(null);
   const [question, setQuestion] = useState("");
+  const [time, setTime] = useState(defaultTime);
+  const [timeLeft, setTimeLeft] = useState(time);
   const [showTooSlow, setShowTooSlow] = useState(false);
   const [showGetReady, setShowGetReady] = useState(false);
 
@@ -17,8 +20,10 @@ export default function SortingForm() {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const questionText = (form.elements.namedItem('question') as HTMLInputElement).value;
+    const time = parseInt((form.elements.namedItem('time') as HTMLInputElement).value);
     const optionsText = (form.elements.namedItem('options') as HTMLTextAreaElement).value;
     setQuestion(questionText);
+    setTime(time);
     const optionsList = optionsText.split('\n').filter(option => option.trim() !== '');
 
     // Randomize the initial list
@@ -35,7 +40,7 @@ export default function SortingForm() {
       setCurrentPair([shuffledList[0], shuffledList[1]]);
       setCurrentIndex(0);
       setCurrentPass(0);
-      setTimeLeft(1000);
+      setTimeLeft(time);
     }, 1000);
   };
 
@@ -48,7 +53,7 @@ export default function SortingForm() {
       }
 
       // Reset timer
-      setTimeLeft(1000);
+      setTimeLeft(time);
 
       // Start new timer
       const id = setInterval(() => {
@@ -128,6 +133,7 @@ export default function SortingForm() {
     setCurrentIndex(0);
     setCurrentPass(0);
     setQuestion("");
+    setTime(defaultTime);
   };
 
   return (
@@ -142,6 +148,16 @@ export default function SortingForm() {
               name="question"
               class="border-2 rounded p-2"
               value="What's for dinner?"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label htmlFor="time">Time per choice (ms):</label>
+            <input
+              type="number"
+              id="time"
+              name="time"
+              class="border-2 rounded p-2"
+              value={defaultTime}
             />
           </div>
           <div class="flex flex-col">

@@ -19,7 +19,7 @@
 }
 
 .optionsList {
-  height: 50vh;
+  height: 40vh;
 }
 
 .bigButton {
@@ -212,7 +212,7 @@ html, .bg-\[\#86efac\] {
   }
 
   .optionsList {
-    height: 30vh;
+    height: 20vh;
   }
 
   .tooSlow {
@@ -247,7 +247,7 @@ html, .bg-\[\#86efac\] {
   }
 
   .optionsList {
-    height: 30vw;
+    height: 20vw;
   }
 }
 
